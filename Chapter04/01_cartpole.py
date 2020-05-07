@@ -17,6 +17,7 @@ PERCENTILE = 70
 class Net(nn.Module):
     def __init__(self, obs_size, hidden_size, n_actions):
         super(Net, self).__init__()
+        # create a NN with one hidden layer which uses ReLU
         self.net = nn.Sequential(
             nn.Linear(obs_size, hidden_size),
             nn.ReLU(),
@@ -32,6 +33,9 @@ EpisodeStep = namedtuple('EpisodeStep', field_names=['observation', 'action'])
 
 
 def iterate_batches(env, net, batch_size):
+    """
+    Generates batches with episodes
+    """
     batch = []
     episode_reward = 0.0
     episode_steps = []
@@ -81,6 +85,7 @@ if __name__ == "__main__":
     n_actions = env.action_space.n
 
     net = Net(obs_size, HIDDEN_SIZE, n_actions)
+    # combines softmax and cross-entropy
     objective = nn.CrossEntropyLoss()
     optimizer = optim.Adam(params=net.parameters(), lr=0.01)
     writer = SummaryWriter(comment="-cartpole")
